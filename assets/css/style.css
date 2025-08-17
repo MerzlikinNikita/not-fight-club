@@ -44,7 +44,7 @@ button {
 
 .divider {
   width: 100%;
-  height: 1px;
+  height: 2px;
   background-color: #000;
   margin-bottom: 20px;
 }
@@ -53,4 +53,17 @@ button {
   position: absolute;
   top: 25px;
   left: 20px;
+}
+
+.player__name {
+  margin: 0 10px;
+}
+
+#edit-name-input {
+  display: none;
+}
+
+#save-name-btn {
+  display: none;
+  /* cursor: not-allowed; */
 }
