@@ -55,8 +55,13 @@ button {
   left: 20px;
 }
 
-.player__name {
-  margin: 0 10px;
+.settings__description {
+  margin-right: 10px;
+}
+
+#edit-name-btn,
+#save-name-btn {
+  margin-left: 10px;
 }
 
 #edit-name-input {
@@ -65,5 +70,139 @@ button {
 
 #save-name-btn {
   display: none;
-  /* cursor: not-allowed; */
+}
+
+.character__inner {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.avatar__inner {
+  width: 300px;
+  height: 350px;
+  border: 1px solid #000;
+  border-radius: 15px;
+  overflow: hidden;
+  position: relative;
+}
+
+.character__description > .player__name {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.wins__total {
+  margin-right: 10px;
+  color: #080;
+}
+
+.loses__total {
+  color: #f00;
+}
+
+.avatar__img.active {
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
+}
+
+#change-avatar-btn {
+  position: absolute;
+  top: 43%;
+  left: 43%;
+  width: 50px;
+  height: 50px;
+  border: 1px solid #000;
+  border-radius: 50%;
+  display: none;
+}
+
+.avatar__inner:hover {
+  opacity: 0.75;
+}
+
+.avatar__inner:hover #change-avatar-btn {
+  display: block;
+}
+
+#close-modal {
+  display: block;
+  margin-right: 0;
+  margin-left: auto;
+  width: 27px;
+  height: 27px;
+  background-color: transparent;
+  border: none;
+  position: relative;
+}
+
+.close__modal-line {
+  position: absolute;
+  top: 0;
+  left: 46.5%;
+  display: block;
+  width: 2px;
+  height: 29px;
+  background-color: #000;
+}
+
+.close__modal-line:first-child {
+  transform: rotate(45deg);
+}
+
+.close__modal-line:last-child {
+  transform: rotate(-45deg);
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: 99999;
+  background-color: rgba(0, 0, 0, 0.3);
+  pointer-events: auto;
+  overflow-y: auto;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.8s ease-out, visibility 0.8s ease-out;
+}
+
+.modal.open {
+  visibility: visible;
+  opacity: 1;
+}
+
+.modal__character {
+  max-width: 1480px;
+  padding: 30px 30px 30px;
+  margin: 250px auto 0;
+  background-color: #fff;
+  pointer-events: auto;
+  transform: translateX(-100vw);
+  transition: transform 0.8s ease-out;
+}
+
+.modal__character.open {
+  transform: translateX(0);
+}
+
+.modal__character > .avatar__img {
+  width: 300px;
+  height: 350px;
+  border: 1px solid #000;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-right: 10px;
+  object-fit: contain;
+}
+
+.modal__character > .avatar__img:hover {
+  opacity: 0.75;
+}
+
+#fight-btn{
+  padding: 10px 20px;
 }

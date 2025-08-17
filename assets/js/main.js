@@ -44,10 +44,11 @@ const urlLocationHandler = async () => {
     registrationActions();
   } else if (location === "/settings") {
     settingsActions();
+  } else if (location === "/character") {
+    characterActions();
+  } else if (location === "/") {
+    mainActions();
   }
-
-  const playerName = document.querySelector(".player__name");
-  playerName.textContent = localStorage.getItem("playerName");
 };
 
 const registrationActions = () => {
@@ -70,6 +71,8 @@ const settingsActions = () => {
   const playerName = document.querySelector(".player__name");
   const changeNameInput = document.getElementById("edit-name-input");
   const saveNameBtn = document.getElementById("save-name-btn");
+
+  playerName.textContent = localStorage.getItem("playerName");
 
   editNameBtn.addEventListener("click", () => {
     playerName.style.display = "none";
@@ -104,6 +107,86 @@ const settingsActions = () => {
     editNameBtn.style.display = "inline-block";
     changeNameInput.style.display = "none";
     saveNameBtn.style.display = "none";
+  });
+};
+
+const characterActions = () => {
+  const changeAvatarBtn = document.getElementById("change-avatar-btn");
+  const modal = document.querySelector(".modal");
+  const modalCharacter = document.querySelector(".modal__character");
+  const closeModalBtn = document.getElementById("close-modal");
+  const avatarImages = document.querySelectorAll(".avatar__img");
+  const playerName = document.querySelector(".player__name");
+
+  playerName.textContent = localStorage.getItem("playerName");
+
+  const getCharacterInfo = () => {
+    const avatarInner = document.querySelector(".avatar__inner");
+    const currentAvatar = avatarInner.querySelector(".avatar__img");
+    const savedAvatarSrc = localStorage.getItem("selectedAvatarSrc");
+    const savedAvatarAlt = localStorage.getItem("selectedAvatarAlt");
+
+    if (savedAvatarSrc && currentAvatar) {
+      currentAvatar.src = savedAvatarSrc;
+      currentAvatar.alt = savedAvatarAlt;
+    }
+  };
+
+  const openCharacterModal = () => {
+    modal.classList.add("open");
+    modalCharacter.classList.add("open");
+    document.body.style.overflow = "hidden";
+
+    avatarImages.forEach((avatar) =>
+      avatar.addEventListener("click", changePlayerAvatar)
+    );
+  };
+
+  const closeCharacterModal = () => {
+    modal.classList.remove("open");
+    modalCharacter.classList.remove("open");
+    document.body.style.overflow = "auto";
+
+    avatarImages.forEach((avatar) =>
+      avatar.removeEventListener("click", changePlayerAvatar)
+    );
+  };
+
+  modal.addEventListener("click", (e) => {
+    if (
+      e.target === modal &&
+      modal.classList.contains("open") &&
+      modalCharacter.classList.contains("open")
+    ) {
+      closeCharacterModal();
+    }
+  });
+
+  const changePlayerAvatar = (e) => {
+    const avatarInner = document.querySelector(".avatar__inner");
+    const currentAvatar = avatarInner.querySelector(".avatar__img");
+    const newAvatar = e.target.cloneNode(true);
+
+    currentAvatar.src = newAvatar.src;
+    currentAvatar.alt = newAvatar.alt;
+
+    localStorage.setItem("selectedAvatarSrc", newAvatar.src);
+    localStorage.setItem("selectedAvatarAlt", newAvatar.alt);
+  };
+
+  getCharacterInfo();
+  changeAvatarBtn.addEventListener("click", openCharacterModal);
+  closeModalBtn.addEventListener("click", closeCharacterModal);
+};
+
+const mainActions = () => {
+  const startFightBtn = document.getElementById("fight-btn");
+
+  startFightBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+
+    window.history.pushState({}, "", "/battle");
+    urlLocationHandler();
   });
 };
 
