@@ -1,1 +1,96 @@
 <span class="template__title">Battle</span>
+<div class="battle__inner-upper">
+  <div class="player__inner">
+    <span class="player__name">???</span>
+    <div class="player__avatar-inner">
+      <img
+        class="avatar__img active"
+        src="/assets/img/characters/udzy.webp"
+        alt="udzy"
+      />
+    </div>
+    <input
+      type="range"
+      value="100"
+      min="0"
+      max="100"
+      step="1"
+      name="player-health-bar"
+      id="player-health-bar"
+    />
+    <span class="player__health-points">150/150</span>
+  </div>
+
+  <div class="battle__description">
+    <span class="battle__description-title"
+      >Please pick 1 Attack zone and 2 Defence zones</span
+    >
+    <div class="battle__actions">
+      <div class="battle__actions-left">
+        <span class="attack__actions-title">Attack zones</span>
+        <div class="battle__actions-item">
+          <label for="attack-head">Head</label>
+          <input type="radio" name="radio" id="attack-head" value="0" />
+        </div>
+        <div class="battle__actions-item">
+          <label for="attack-neck">Neck</label>
+          <input type="radio" name="radio" id="attack-neck" value="0" />
+        </div>
+        <div class="battle__actions-item">
+          <label for="attack-body">Body</label>
+          <input type="radio" name="radio" id="attack-body" value="0" />
+        </div>
+        <div class="battle__actions-item">
+          <label for="attack-belly">Belly</label>
+          <input type="radio" name="radio" id="attack-belly" value="0" />
+        </div>
+        <div class="battle__actions-item">
+          <label for="attack-legs">Legs</label>
+          <input type="radio" name="radio" id="attack-legs" value="0" />
+        </div>
+      </div>
+
+      <div class="battle__actions-right">
+        <span class="defence__actions-title">Defence zones</span>
+        <div class="battle__actions-item">
+          <input type="radio" name="radio" id="defence-head" value="0" />
+          <label for="defence-head">Head</label>
+        </div>
+        <div class="battle__actions-item">
+          <input type="radio" name="radio" id="defence-neck" value="0" />
+          <label for="defence-neck">Neck</label>
+        </div>
+        <div class="battle__actions-item">
+          <input type="radio" name="radio" id="defence-body" value="0" />
+          <label for="defence-body">Body</label>
+        </div>
+        <div class="battle__actions-item">
+          <input type="radio" name="radio" id="defence-belly" value="0" />
+          <label for="defence-belly">Belly</label>
+        </div>
+        <div class="battle__actions-item">
+          <input type="radio" name="radio" id="defence-legs" value="0" />
+          <label for="defence-legs">Legs</label>
+        </div>
+      </div>
+    </div>
+
+    <button id="attack-btn">Attack!</button>
+  </div>
+
+  <div class="enemy__inner">
+    <span class="enemy__name">###</span>
+    <div class="enemy__avatar-inner"></div>
+    <input
+      type="range"
+      value="100"
+      min="0"
+      max="100"
+      step="1"
+      name="enemy-health-bar"
+      id="enemy-health-bar"
+    />
+    <span class="enemy__health-points">150/150</span>
+  </div>
+</div>
+<div class="battle__inner-lower"></div>

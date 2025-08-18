@@ -203,6 +203,108 @@ button {
   opacity: 0.75;
 }
 
-#fight-btn{
+#fight-btn {
   padding: 10px 20px;
+}
+
+/* Ниже новый код (с работы). Делать несколько коммитов (сначала CSS, затем JS через минут 30) */
+
+.battle__inner-upper {
+  margin-top: 50px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.player__inner,
+.enemy__inner {
+  display: flex;
+  width: 300px;
+  flex-direction: column;
+  align-items: center;
+}
+
+.player__inner > .player__name,
+.enemy__inner > .enemy__name {
+  margin-bottom: 10px;
+}
+
+#player-health-bar,
+#enemy-health-bar {
+  width: 100%;
+  height: 15px;
+  -webkit-appearance: none;
+  background-color: darkred;
+  border-radius: 5px;
+  margin-bottom: 5px;
+}
+
+#player-health-bar::-webkit-slider-thumb,
+#enemy-health-bar::-webkit-slider-thumb {
+  -webkit-appearance: none;
+}
+
+.battle__description {
+  width: 500px;
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.battle__description-title {
+  margin-bottom: 20px;
+}
+
+.battle__actions {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.battle__actions-left,
+.battle__actions-right {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+}
+
+.battle__actions-left {
+  text-align: right;
+  padding-right: 20px;
+  border-right: 1px solid #000;
+}
+
+.attack__actions-title,
+.defence__actions-title {
+  margin-bottom: 5px;
+}
+
+.battle__actions-left > label {
+  display: inline-block;
+}
+
+.battle__actions-right {
+  text-align: left;
+  padding-left: 20px;
+}
+
+.battle__actions-item {
+  margin-bottom: 5px;
+}
+
+.player__avatar-inner,
+.enemy__avatar-inner {
+  width: 300px;
+  height: 350px;
+  border: 1px solid #000;
+  border-radius: 15px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+#attack-btn {
+  padding: 8px 12px;
+  border-radius: 5px;
 }

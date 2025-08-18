@@ -48,6 +48,8 @@ const urlLocationHandler = async () => {
     characterActions();
   } else if (location === "/") {
     mainActions();
+  } else if (location === "/battle") {
+    battleActions();
   }
 };
 
@@ -120,18 +122,6 @@ const characterActions = () => {
 
   playerName.textContent = localStorage.getItem("playerName");
 
-  const getCharacterInfo = () => {
-    const avatarInner = document.querySelector(".avatar__inner");
-    const currentAvatar = avatarInner.querySelector(".avatar__img");
-    const savedAvatarSrc = localStorage.getItem("selectedAvatarSrc");
-    const savedAvatarAlt = localStorage.getItem("selectedAvatarAlt");
-
-    if (savedAvatarSrc && currentAvatar) {
-      currentAvatar.src = savedAvatarSrc;
-      currentAvatar.alt = savedAvatarAlt;
-    }
-  };
-
   const openCharacterModal = () => {
     modal.classList.add("open");
     modalCharacter.classList.add("open");
@@ -174,7 +164,9 @@ const characterActions = () => {
     localStorage.setItem("selectedAvatarAlt", newAvatar.alt);
   };
 
-  getCharacterInfo();
+  const pathName = window.location.pathname;
+
+  getCharacterInfo(pathName);
   changeAvatarBtn.addEventListener("click", openCharacterModal);
   closeModalBtn.addEventListener("click", closeCharacterModal);
 };
@@ -188,6 +180,44 @@ const mainActions = () => {
     window.history.pushState({}, "", "/battle");
     urlLocationHandler();
   });
+};
+
+const battleActions = () => {
+  const pathName = window.location.pathname;
+
+  getCharacterInfo(pathName);
+};
+
+const getCharacterInfo = (pathName) => {
+  const savedAvatarSrc = localStorage.getItem("selectedAvatarSrc");
+  const savedAvatarAlt = localStorage.getItem("selectedAvatarAlt");
+
+  if (pathName === "/character") {
+    const avatarInner = document.querySelector(".avatar__inner");
+    const currentAvatar = avatarInner.querySelector(".avatar__img");
+
+    if (savedAvatarSrc && currentAvatar) {
+      currentAvatar.src = savedAvatarSrc;
+      currentAvatar.alt = savedAvatarAlt;
+    }
+  } else if (pathName === "/battle") {
+    const playerFightingAvatarInner = document.querySelector(
+      ".player__avatar-inner"
+    );
+    const currentPlayerFightingAvatar =
+      playerFightingAvatarInner.querySelector(".avatar__img");
+    const playerFightingName = document.querySelector(".player__name");
+    const savedPlayerName = localStorage.getItem("playerName");
+
+    if (savedAvatarSrc && savedAvatarAlt && currentPlayerFightingAvatar) {
+      currentPlayerFightingAvatar.src = savedAvatarSrc;
+      currentPlayerFightingAvatar.alt = savedAvatarAlt;
+    }
+
+    if (savedPlayerName && playerFightingName) {
+      playerFightingName.textContent = savedPlayerName;
+    }
+  }
 };
 
 window.onpopstate = urlLocationHandler;
