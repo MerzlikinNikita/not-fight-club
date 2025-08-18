@@ -40,6 +40,7 @@ button {
   position: absolute;
   top: 50%;
   left: 48.5%;
+  padding: 10px 20px;
 }
 
 .divider {
@@ -203,12 +204,6 @@ button {
   opacity: 0.75;
 }
 
-#fight-btn {
-  padding: 10px 20px;
-}
-
-/* Ниже новый код (с работы). Делать несколько коммитов (сначала CSS, затем JS через минут 30) */
-
 .battle__inner-upper {
   margin-top: 50px;
   display: flex;
@@ -277,7 +272,7 @@ button {
 }
 
 .attack__actions-title,
-.defence__actions-title {
+.defense__actions-title {
   margin-bottom: 5px;
 }
 
@@ -306,5 +301,9 @@ button {
 
 #attack-btn {
   padding: 8px 12px;
-  border-radius: 5px;
+}
+
+.attack__option,
+.defense__option {
+  cursor: pointer;
 }

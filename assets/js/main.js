@@ -186,6 +186,65 @@ const battleActions = () => {
   const pathName = window.location.pathname;
 
   getCharacterInfo(pathName);
+  toggleInputRadio();
+};
+
+const toggleInputRadio = () => {
+  const radioAttackInputs = document.querySelectorAll(".attack__option");
+  const radioDefenseInputs = document.querySelectorAll(".defense__option");
+  const attackBtn = document.getElementById("attack-btn");
+  let checkedAttackCount = 0;
+  let checkedDefenseCount = 0;
+
+  radioAttackInputs.forEach((radio) => {
+    let wasChecked = false;
+
+    radio.addEventListener("mousedown", () => {
+      wasChecked = radio.checked;
+    });
+
+    radio.addEventListener("click", () => {
+      if (wasChecked) {
+        radio.checked = false;
+        checkedAttackCount -= 1;
+      } else {
+        checkedAttackCount += 1;
+      }
+      console.log("attack", checkedAttackCount);
+      updateAttackBtnState();
+    });
+  });
+
+  radioDefenseInputs.forEach((radio) => {
+    let wasChecked = false;
+
+    radio.addEventListener("mousedown", () => {
+      wasChecked = radio.checked;
+    });
+
+    radio.addEventListener("click", () => {
+      if (wasChecked) {
+        radio.checked = false;
+        checkedDefenseCount -= 1;
+      } else {
+        checkedDefenseCount += 1;
+      }
+      console.log("defense", checkedDefenseCount);
+      updateAttackBtnState();
+    });
+  });
+
+  const updateAttackBtnState = () => {
+    if (checkedAttackCount === 1 && checkedDefenseCount === 2) {
+      attackBtn.disabled = false;
+      attackBtn.style.cursor = "pointer";
+    } else {
+      attackBtn.disabled = true;
+      attackBtn.style.cursor = "not-allowed";
+    }
+  };
+
+  updateAttackBtnState();
 };
 
 const getCharacterInfo = (pathName) => {
