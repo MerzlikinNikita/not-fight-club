@@ -184,9 +184,125 @@ const mainActions = () => {
 
 const battleActions = () => {
   const pathName = window.location.pathname;
+  const enemyInfo = getEnemyInfo();
+  const playerInfo = getCharacterInfo(pathName);
+  const playerHealthBar = document.getElementById("player-health-bar");
+  const enemyHealthBar = document.getElementById("enemy-health-bar");
+  const attackBtn = document.getElementById("attack-btn");
+  const playerHealthPoints = document.querySelector(".player__health-points");
+  const enemyHealthPoints = document.querySelector(".enemy__health-points");
+  let currentPlayerHealth = playerInfo.health;
+  let currentEnemyHealth = enemyInfo.health;
+  let currentPlayerHealthInPercents;
+  let currentEnemyHealthInPercents;
 
-  getCharacterInfo(pathName);
+  attackBtn.addEventListener("click", () => {
+    giveDamageToEnemy();
+  });
+
+  const giveDamageToEnemy = () => {
+    currentEnemyHealth -= 20;
+
+    currentEnemyHealthInPercents =
+      (currentEnemyHealth / enemyInfo.health) * 100;
+
+    enemyHealthBar.style.background = `linear-gradient(to right, darkred 0%, darkred ${currentEnemyHealthInPercents}%, #c4c4c4 ${currentEnemyHealthInPercents}%, #c4c4c4 100%)`;
+
+    enemyHealthPoints.textContent = `${currentEnemyHealth}/${enemyInfo.health}`;
+  };
+
   toggleInputRadio();
+};
+
+const getEnemyInfo = () => {
+  const originPath = window.location.origin;
+  const enemyFightingAvatarInner = document.querySelector(
+    ".enemy__avatar-inner"
+  );
+  const currentEnemyFightingAvatar =
+    enemyFightingAvatarInner.querySelector(".avatar__img");
+
+  const sukunaEnemy = {
+    name: "Sukuna",
+    health: "200",
+    damage: "30",
+    avatarSrc: originPath + "/assets/img/enemies/sukuna.webp",
+    avatarAlt: "sukuna",
+  };
+
+  const tojiEnemy = {
+    name: "Toji",
+    health: "170",
+    damage: "25",
+    avatarSrc: originPath + "/assets/img/enemies/toji.webp",
+    avatarAlt: "toji",
+  };
+
+  const mahitoEnemy = {
+    name: "Mahito",
+    health: "150",
+    damage: "20",
+    avatarSrc: originPath + "/assets/img/enemies/mahito.webp",
+    avatarAlt: "mahito",
+  };
+
+  const enemiesArray = [sukunaEnemy, tojiEnemy, mahitoEnemy];
+
+  const enemyIndex = Math.floor(Math.random(0, 1) * enemiesArray.length);
+
+  const currentEnemy = enemiesArray[enemyIndex];
+
+  const enemyName = document.querySelector(".enemy__name");
+  const enemyHealth = document.querySelector(".enemy__health-points");
+
+  enemyName.textContent = currentEnemy.name;
+  currentEnemyFightingAvatar.src = currentEnemy.avatarSrc;
+  currentEnemyFightingAvatar.alt = currentEnemy.avatarAlt;
+  enemyHealth.textContent = `${currentEnemy.health}/${currentEnemy.health}`;
+
+  return currentEnemy;
+};
+
+const getCharacterInfo = (pathName) => {
+  const savedAvatarSrc = localStorage.getItem("selectedAvatarSrc");
+  const savedAvatarAlt = localStorage.getItem("selectedAvatarAlt");
+
+  if (pathName === "/character") {
+    const avatarInner = document.querySelector(".avatar__inner");
+    const currentAvatar = avatarInner.querySelector(".avatar__img");
+
+    if (savedAvatarSrc && currentAvatar) {
+      currentAvatar.src = savedAvatarSrc;
+      currentAvatar.alt = savedAvatarAlt;
+    }
+  } else if (pathName === "/battle") {
+    const playerFightingAvatarInner = document.querySelector(
+      ".player__avatar-inner"
+    );
+    const currentPlayerFightingAvatar =
+      playerFightingAvatarInner.querySelector(".avatar__img");
+    const playerFightingName = document.querySelector(".player__name");
+    const savedPlayerName = localStorage.getItem("playerName");
+
+    const currentPlayer = {
+      name: savedPlayerName,
+      health: "150",
+      damage: "20",
+    };
+
+    if (savedAvatarSrc && savedAvatarAlt && currentPlayerFightingAvatar) {
+      currentPlayerFightingAvatar.src = savedAvatarSrc;
+      currentPlayerFightingAvatar.alt = savedAvatarAlt;
+      currentPlayer.avatarSrc = savedAvatarSrc;
+      currentPlayer.avatarAlt = savedAvatarAlt;
+    }
+
+    if (savedPlayerName && playerFightingName) {
+      playerFightingName.textContent = savedPlayerName;
+    }
+
+    return currentPlayer;
+  }
 };
 
 const toggleInputRadio = () => {
@@ -245,38 +361,6 @@ const toggleInputRadio = () => {
   };
 
   updateAttackBtnState();
-};
-
-const getCharacterInfo = (pathName) => {
-  const savedAvatarSrc = localStorage.getItem("selectedAvatarSrc");
-  const savedAvatarAlt = localStorage.getItem("selectedAvatarAlt");
-
-  if (pathName === "/character") {
-    const avatarInner = document.querySelector(".avatar__inner");
-    const currentAvatar = avatarInner.querySelector(".avatar__img");
-
-    if (savedAvatarSrc && currentAvatar) {
-      currentAvatar.src = savedAvatarSrc;
-      currentAvatar.alt = savedAvatarAlt;
-    }
-  } else if (pathName === "/battle") {
-    const playerFightingAvatarInner = document.querySelector(
-      ".player__avatar-inner"
-    );
-    const currentPlayerFightingAvatar =
-      playerFightingAvatarInner.querySelector(".avatar__img");
-    const playerFightingName = document.querySelector(".player__name");
-    const savedPlayerName = localStorage.getItem("playerName");
-
-    if (savedAvatarSrc && savedAvatarAlt && currentPlayerFightingAvatar) {
-      currentPlayerFightingAvatar.src = savedAvatarSrc;
-      currentPlayerFightingAvatar.alt = savedAvatarAlt;
-    }
-
-    if (savedPlayerName && playerFightingName) {
-      playerFightingName.textContent = savedPlayerName;
-    }
-  }
 };
 
 window.onpopstate = urlLocationHandler;
