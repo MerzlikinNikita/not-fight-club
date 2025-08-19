@@ -176,7 +176,8 @@ button {
   opacity: 1;
 }
 
-.modal__character {
+.modal__character,
+.modal__battle {
   max-width: 1480px;
   padding: 30px 30px 30px;
   margin: 250px auto 0;
@@ -186,8 +187,27 @@ button {
   transition: transform 0.8s ease-out;
 }
 
-.modal__character.open {
+.modal__character.open,
+.modal__battle.open {
   transform: translateX(0);
+}
+
+.modal__battle {
+  max-width: 1200px;
+  padding: 30px 30px 50px;
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.winner__battle-text,
+.loser__battle-text {
+  display: none;
+}
+
+.winner__battle-text.active,
+.loser__battle-text.active {
+  display: inline;
 }
 
 .modal__character > .avatar__img {

@@ -191,17 +191,61 @@ const battleActions = () => {
   const attackBtn = document.getElementById("attack-btn");
   const playerHealthPoints = document.querySelector(".player__health-points");
   const enemyHealthPoints = document.querySelector(".enemy__health-points");
+  const defensePointsListInner = document.querySelector(
+    ".battle__actions-right"
+  );
+  const defensePointsList = defensePointsListInner.querySelectorAll("input");
+  const attackPointsInner = document.querySelector(".battle__actions-left");
+  const attackPointsList = attackPointsInner.querySelectorAll("input");
+
   let currentPlayerHealth = playerInfo.health;
   let currentEnemyHealth = enemyInfo.health;
   let currentPlayerHealthInPercents;
   let currentEnemyHealthInPercents;
 
   attackBtn.addEventListener("click", () => {
-    giveDamageToEnemy();
+    const enemyDefensePoints = getEnemyDefensePoints();
+
+    console.log(enemyDefensePoints);
+
+    attackPointsList.forEach((point) => {
+      if (point.checked) {
+        const attackPointsArray = Array.from(attackPointsList);
+        const pointIndex = attackPointsArray.indexOf(point);
+        const isCriticalDamage = calculateCriticalDamage();
+        let criticalCoefficient;
+
+        console.log(isCriticalDamage);
+
+        if (!enemyDefensePoints.includes(defensePointsList[pointIndex])) {
+          criticalCoefficient = 1;
+
+          giveDamageToEnemy(criticalCoefficient);
+        } else if (isCriticalDamage) {
+          criticalCoefficient = 1.5;
+
+          giveDamageToEnemy(criticalCoefficient);
+        }
+      }
+    });
   });
 
-  const giveDamageToEnemy = () => {
-    currentEnemyHealth -= 20;
+  const calculateCriticalDamage = () => {
+    const criticalNumber = Math.random();
+
+    console.log(criticalNumber);
+
+    if (criticalNumber >= 0.7) {
+      return true;
+    }
+
+    return false;
+  };
+
+  const giveDamageToEnemy = (criticalCoefficient) => {
+    currentEnemyHealth -= 20 * criticalCoefficient;
+
+    console.log("crit", criticalCoefficient);
 
     currentEnemyHealthInPercents =
       (currentEnemyHealth / enemyInfo.health) * 100;
@@ -209,6 +253,22 @@ const battleActions = () => {
     enemyHealthBar.style.background = `linear-gradient(to right, darkred 0%, darkred ${currentEnemyHealthInPercents}%, #c4c4c4 ${currentEnemyHealthInPercents}%, #c4c4c4 100%)`;
 
     enemyHealthPoints.textContent = `${currentEnemyHealth}/${enemyInfo.health}`;
+  };
+
+  const getEnemyDefensePoints = () => {
+    const enemyDefensePoints = [];
+
+    while (enemyDefensePoints.length !== 2) {
+      let generatePointIndex = Math.floor(
+        Math.random() * defensePointsList.length
+      );
+
+      if (!enemyDefensePoints.includes(defensePointsList[generatePointIndex])) {
+        enemyDefensePoints.push(defensePointsList[generatePointIndex]);
+      }
+    }
+
+    return enemyDefensePoints;
   };
 
   toggleInputRadio();
