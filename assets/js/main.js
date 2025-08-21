@@ -116,10 +116,16 @@ const characterActions = () => {
   const changeAvatarBtn = document.getElementById("change-avatar-btn");
   const modal = document.querySelector(".modal");
   const modalCharacter = document.querySelector(".modal__character");
-  const closeModalBtn = document.getElementById("close-modal");
+  const closeModalBtn = document.getElementById("close-character-modal");
   const avatarImages = document.querySelectorAll(".avatar__img");
   const playerName = document.querySelector(".player__name");
+  const totalWins = document.querySelector(".wins__total");
+  const totalLosses = document.querySelector(".losses__total");
 
+  totalWins.textContent = `Wins: ${localStorage.getItem("totalWins") || "0"}`;
+  totalLosses.textContent = `Losses: ${
+    localStorage.getItem("totalLosses") || "0"
+  }`;
   playerName.textContent = localStorage.getItem("playerName");
 
   const openCharacterModal = () => {
@@ -184,7 +190,8 @@ const mainActions = () => {
 
 const battleActions = () => {
   const pathName = window.location.pathname;
-  const enemyInfo = getEnemyInfo();
+  const enemyInfo =
+    JSON.parse(localStorage.getItem("currentEnemy")) || getEnemyInfo();
   const playerInfo = getCharacterInfo(pathName);
   const playerHealthBar = document.getElementById("player-health-bar");
   const enemyHealthBar = document.getElementById("enemy-health-bar");
@@ -198,21 +205,77 @@ const battleActions = () => {
   const attackPointsInner = document.querySelector(".battle__actions-left");
   const attackPointsList = attackPointsInner.querySelectorAll("input");
 
-  let currentPlayerHealth = playerInfo.health;
-  let currentEnemyHealth = enemyInfo.health;
+  let currentPlayerHealth =
+    localStorage.getItem("currentPlayerHealth") || playerInfo.health;
+  let currentEnemyHealth =
+    localStorage.getItem("currentEnemyHealth") || enemyInfo.health;
   let currentPlayerHealthInPercents;
   let currentEnemyHealthInPercents;
 
+  const initializePlayer = () => {
+    playerHealthPoints.textContent = `${currentPlayerHealth}/${playerInfo.health}`;
+
+    currentPlayerHealthInPercents =
+      (currentPlayerHealth / playerInfo.health) * 100;
+
+    playerHealthBar.style.background = `linear-gradient(to right, darkred 0%, darkred ${currentPlayerHealthInPercents}%, #c4c4c4 ${currentPlayerHealthInPercents}%, #c4c4c4 100%)`;
+  };
+
+  initializePlayer();
+
+  const initializeEnemy = () => {
+    const enemyFightingAvatarInner = document.querySelector(
+      ".enemy__avatar-inner"
+    );
+    const currentEnemyFightingAvatar =
+      enemyFightingAvatarInner.querySelector(".avatar__img");
+    const enemyName = document.querySelector(".enemy__name");
+    const enemyHealth = document.querySelector(".enemy__health-points");
+
+    enemyName.textContent = enemyInfo.name;
+    currentEnemyFightingAvatar.src = enemyInfo.avatarSrc;
+    currentEnemyFightingAvatar.alt = enemyInfo.avatarAlt;
+    enemyHealth.textContent = `${currentEnemyHealth}/${enemyInfo.health}`;
+
+    currentEnemyHealthInPercents =
+      (currentEnemyHealth / enemyInfo.health) * 100;
+
+    enemyHealthBar.style.background = `linear-gradient(to right, darkred 0%, darkred ${currentEnemyHealthInPercents}%, #c4c4c4 ${currentEnemyHealthInPercents}%, #c4c4c4 100%)`;
+  };
+
+  initializeEnemy();
+
   attackBtn.addEventListener("click", () => {
     const enemyDefensePoints = getEnemyDefensePoints();
+    const enemyAttackPoints = getEnemyAttackPoints();
+    const defensePointsArray = Array.from(defensePointsList);
+    const playerDefensePoints = defensePointsArray.filter(
+      (point) => point.checked
+    );
+
+    console.log(playerDefensePoints);
 
     console.log(enemyDefensePoints);
+    console.log(enemyAttackPoints);
+
+    enemyAttackPoints.forEach((point) => {
+      if (!playerDefensePoints.includes(point)) {
+        const isCriticalDamage = calculateCriticalDamage("enemyCrit");
+        let criticalCoefficient = 1;
+
+        if (isCriticalDamage) {
+          criticalCoefficient = 1.25;
+        }
+
+        giveDamageToPlayer(criticalCoefficient);
+      }
+    });
 
     attackPointsList.forEach((point) => {
       if (point.checked) {
         const attackPointsArray = Array.from(attackPointsList);
         const pointIndex = attackPointsArray.indexOf(point);
-        const isCriticalDamage = calculateCriticalDamage();
+        const isCriticalDamage = calculateCriticalDamage("playerCrit");
         let criticalCoefficient;
 
         console.log(isCriticalDamage);
@@ -220,20 +283,76 @@ const battleActions = () => {
         if (!enemyDefensePoints.includes(defensePointsList[pointIndex])) {
           criticalCoefficient = 1;
 
-          giveDamageToEnemy(criticalCoefficient);
-        } else if (isCriticalDamage) {
-          criticalCoefficient = 1.5;
+          if (isCriticalDamage) {
+            criticalCoefficient = 1.5;
+          }
 
           giveDamageToEnemy(criticalCoefficient);
         }
       }
     });
+
+    if (currentEnemyHealth <= 0) {
+      const battleModalWinnerText = document.querySelector(
+        ".winner__battle-text"
+      );
+      const totalWins = parseInt(localStorage.getItem("totalWins") || "0") + 1;
+
+      localStorage.setItem("totalWins", totalWins.toString());
+      openBattleModal(battleModalWinnerText);
+    } else if (currentPlayerHealth <= 0) {
+      const battleModalLooserText = document.querySelector(
+        ".looser__battle-text"
+      );
+      const totalLosses =
+        parseInt(localStorage.getItem("totalLosses") || "0") + 1;
+
+      localStorage.setItem("totalLosses", totalLosses.toString());
+
+      openBattleModal(battleModalLooserText);
+    }
   });
 
-  const calculateCriticalDamage = () => {
+  const openBattleModal = (text) => {
+    const modal = document.querySelector(".modal");
+    const battleModal = document.querySelector(".modal__battle");
+    const closeModalBtn = document.getElementById("close-battle-modal");
+
+    modal.classList.add("open");
+    battleModal.classList.add("open");
+    text.classList.add("active");
+
+    const closeBattleModal = () => {
+      modal.classList.remove("open");
+      battleModal.classList.remove("open");
+      text.classList.remove("active");
+
+      closeModalBtn.removeEventListener("click", closeBattleModal);
+      window.history.pushState({}, "", "/");
+      urlLocationHandler();
+
+      localStorage.removeItem("currentEnemy");
+      localStorage.removeItem("currentEnemyHealth");
+      localStorage.removeItem("currentPlayerHealth");
+    };
+
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) {
+        closeBattleModal();
+      }
+    });
+
+    closeModalBtn.addEventListener("click", closeBattleModal);
+  };
+
+  const calculateCriticalDamage = (whoseCrit) => {
     const criticalNumber = Math.random();
 
-    console.log(criticalNumber);
+    if (whoseCrit === "playerCrit") {
+      console.log("playerCrit", criticalNumber);
+    } else if (whoseCrit === "enemyCrit") {
+      console.log("enemyCrit", criticalNumber);
+    }
 
     if (criticalNumber >= 0.7) {
       return true;
@@ -242,10 +361,25 @@ const battleActions = () => {
     return false;
   };
 
-  const giveDamageToEnemy = (criticalCoefficient) => {
-    currentEnemyHealth -= 20 * criticalCoefficient;
+  const giveDamageToPlayer = (criticalCoefficient) => {
+    currentPlayerHealth -= Math.floor(enemyInfo.damage * criticalCoefficient);
 
-    console.log("crit", criticalCoefficient);
+    console.log("EnemyCritCoefficient", criticalCoefficient);
+
+    currentPlayerHealthInPercents =
+      (currentPlayerHealth / playerInfo.health) * 100;
+
+    playerHealthBar.style.background = `linear-gradient(to right, darkred 0%, darkred ${currentPlayerHealthInPercents}%, #c4c4c4 ${currentPlayerHealthInPercents}%, #c4c4c4 100%)`;
+
+    playerHealthPoints.textContent = `${currentPlayerHealth}/${playerInfo.health}`;
+
+    localStorage.setItem("currentPlayerHealth", currentPlayerHealth);
+  };
+
+  const giveDamageToEnemy = (criticalCoefficient) => {
+    currentEnemyHealth -= Math.floor(playerInfo.damage * criticalCoefficient);
+
+    console.log("PlayerCritCoefficient", criticalCoefficient);
 
     currentEnemyHealthInPercents =
       (currentEnemyHealth / enemyInfo.health) * 100;
@@ -253,12 +387,42 @@ const battleActions = () => {
     enemyHealthBar.style.background = `linear-gradient(to right, darkred 0%, darkred ${currentEnemyHealthInPercents}%, #c4c4c4 ${currentEnemyHealthInPercents}%, #c4c4c4 100%)`;
 
     enemyHealthPoints.textContent = `${currentEnemyHealth}/${enemyInfo.health}`;
+
+    localStorage.setItem("currentEnemyHealth", currentEnemyHealth);
+  };
+
+  const getEnemyAttackPoints = () => {
+    const enemyAttackPoints = [];
+
+    while (enemyAttackPoints.length !== 2) {
+      if (enemyAttackPoints.length === 1 && enemyInfo.name !== "Sukuna") {
+        break;
+      }
+
+      let generatePointIndex = Math.floor(
+        Math.random() * attackPointsList.length
+      );
+
+      if (!enemyAttackPoints.includes(attackPointsList[generatePointIndex])) {
+        enemyAttackPoints.push(attackPointsList[generatePointIndex]);
+      }
+    }
+
+    return enemyAttackPoints;
   };
 
   const getEnemyDefensePoints = () => {
     const enemyDefensePoints = [];
 
-    while (enemyDefensePoints.length !== 2) {
+    while (enemyDefensePoints.length !== 3) {
+      if (enemyDefensePoints.length === 1 && enemyInfo.name === "Sukuna") {
+        break;
+      }
+
+      if (enemyDefensePoints.length === 2 && enemyInfo.name === "Mahito") {
+        break;
+      }
+
       let generatePointIndex = Math.floor(
         Math.random() * defensePointsList.length
       );
@@ -272,36 +436,41 @@ const battleActions = () => {
   };
 
   toggleInputRadio();
+
+  console.log(
+    "Враг Mahito имеет 2 точки защиты, 1 точку атаки, 140hp здоровья и 15hp урона"
+  );
+  console.log(
+    "Враг Toji имеет 3 точки защиты, 1 точку атаки, 150hp здоровья и 10hp урона"
+  );
+  console.log(
+    "Враг Sukuna имеет 1 точку защиты, 2 точки атаки, 160hp здоровья и 10hp урона"
+  );
 };
 
 const getEnemyInfo = () => {
   const originPath = window.location.origin;
-  const enemyFightingAvatarInner = document.querySelector(
-    ".enemy__avatar-inner"
-  );
-  const currentEnemyFightingAvatar =
-    enemyFightingAvatarInner.querySelector(".avatar__img");
 
   const sukunaEnemy = {
     name: "Sukuna",
-    health: "200",
-    damage: "30",
+    health: "160",
+    damage: "10",
     avatarSrc: originPath + "/assets/img/enemies/sukuna.webp",
     avatarAlt: "sukuna",
   };
 
   const tojiEnemy = {
     name: "Toji",
-    health: "170",
-    damage: "25",
+    health: "150",
+    damage: "10",
     avatarSrc: originPath + "/assets/img/enemies/toji.webp",
     avatarAlt: "toji",
   };
 
   const mahitoEnemy = {
     name: "Mahito",
-    health: "150",
-    damage: "20",
+    health: "140",
+    damage: "15",
     avatarSrc: originPath + "/assets/img/enemies/mahito.webp",
     avatarAlt: "mahito",
   };
@@ -312,13 +481,7 @@ const getEnemyInfo = () => {
 
   const currentEnemy = enemiesArray[enemyIndex];
 
-  const enemyName = document.querySelector(".enemy__name");
-  const enemyHealth = document.querySelector(".enemy__health-points");
-
-  enemyName.textContent = currentEnemy.name;
-  currentEnemyFightingAvatar.src = currentEnemy.avatarSrc;
-  currentEnemyFightingAvatar.alt = currentEnemy.avatarAlt;
-  enemyHealth.textContent = `${currentEnemy.health}/${currentEnemy.health}`;
+  localStorage.setItem("currentEnemy", JSON.stringify(currentEnemy));
 
   return currentEnemy;
 };

@@ -98,7 +98,7 @@ button {
   color: #080;
 }
 
-.loses__total {
+.losses__total {
   color: #f00;
 }
 
@@ -127,7 +127,8 @@ button {
   display: block;
 }
 
-#close-modal {
+#close-character-modal,
+#close-battle-modal {
   display: block;
   margin-right: 0;
   margin-left: auto;
@@ -201,12 +202,12 @@ button {
 }
 
 .winner__battle-text,
-.loser__battle-text {
+.looser__battle-text {
   display: none;
 }
 
 .winner__battle-text.active,
-.loser__battle-text.active {
+.looser__battle-text.active {
   display: inline;
 }
 
