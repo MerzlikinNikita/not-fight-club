@@ -1,3 +1,5 @@
+const REPOSITORY = "/not-fight-club";
+
 const links = document.querySelectorAll(".nav__link");
 
 links.forEach((link) =>
@@ -8,28 +10,25 @@ links.forEach((link) =>
 );
 
 const urlRoutes = {
-  404: "/assets/templates/404.html",
-  "/": "/assets/templates/index.html",
-  "/character": "/assets/templates/character.html",
-  "/settings": "/assets/templates/settings.html",
-  "/battle": "/assets/templates/battle.html",
-  "/registration": "/assets/templates/registration.html",
+  404: `${REPOSITORY}/assets/templates/404.html`,
+  "/": `${REPOSITORY}/assets/templates/index.html`,
+  "/character": `${REPOSITORY}/assets/templates/character.html`,
+  "/settings": `${REPOSITORY}/assets/templates/settings.html`,
+  "/battle": `${REPOSITORY}/assets/templates/battle.html`,
+  "/registration": `${REPOSITORY}/assets/templates/registration.html`,
 };
 
 const urlRoute = (event) => {
   event = event || window.event;
-
   event.preventDefault();
-  window.history.pushState({}, "", event.target.href);
+
+  const path = event.target.href;
+  window.history.pushState({}, "", `${REPOSITORY}${path}`);
   urlLocationHandler();
 };
 
 const urlLocationHandler = async () => {
-  let location = window.location.pathname;
-
-  if (location === "/index.html") {
-    location = "/";
-  }
+  let location = window.location.pathname.replace(REPOSITORY, "") || "/";
 
   if (location !== "/registration" && !localStorage.getItem("playerName")) {
     location = "/registration";
@@ -62,7 +61,7 @@ const registrationActions = () => {
 
     if (newPlayerName) {
       localStorage.setItem("playerName", newPlayerName);
-      window.history.pushState({}, "", "/");
+      window.history.pushState({}, "", `${REPOSITORY}/`);
       urlLocationHandler();
     }
   });
@@ -183,7 +182,7 @@ const mainActions = () => {
   startFightBtn.addEventListener("click", (e) => {
     e.preventDefault();
 
-    window.history.pushState({}, "", "/battle");
+    window.history.pushState({}, "", `${REPOSITORY}/battle`);
     urlLocationHandler();
   });
 };
@@ -447,7 +446,7 @@ const battleActions = () => {
       text.classList.remove("active");
 
       closeModalBtn.removeEventListener("click", closeBattleModal);
-      window.history.pushState({}, "", "/");
+      window.history.pushState({}, "", `${REPOSITORY}/`);
       urlLocationHandler();
 
       localStorage.removeItem("currentEnemy");
