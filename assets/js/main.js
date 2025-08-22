@@ -22,13 +22,19 @@ const urlRoute = (event) => {
   event = event || window.event;
   event.preventDefault();
 
-  const path = event.target.href;
+  const path = event.target.getAttribute("href");
   window.history.pushState({}, "", `${REPOSITORY}${path}`);
   urlLocationHandler();
 };
 
 const urlLocationHandler = async () => {
-  let location = window.location.pathname.replace(REPOSITORY, "") || "/";
+  let location = window.location.pathName;
+
+  if (location.startsWith(REPOSITORY)) {
+    location = location.slice(REPOSITORY.length);
+  }
+
+  location = location || "/";
 
   if (location !== "/registration" && !localStorage.getItem("playerName")) {
     location = "/registration";
