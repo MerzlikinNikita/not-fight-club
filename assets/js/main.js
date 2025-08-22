@@ -325,6 +325,10 @@ const battleActions = () => {
         );
 
         battleLowerInner.insertAdjacentHTML("beforeend", battleLogElement);
+        battleLowerInner.scrollTo({
+          top: battleLowerInner.scrollHeight,
+          behavior: "smooth",
+        });
       } else if (
         !enemyAttackPoints.includes(attackPointsList[defensePlayerPointIndex])
       ) {
@@ -342,6 +346,10 @@ const battleActions = () => {
         );
 
         battleLowerInner.insertAdjacentHTML("beforeend", battleLogElement);
+        battleLowerInner.scrollTo({
+          top: battleLowerInner.scrollHeight,
+          behavior: "smooth",
+        });
       } else {
         const battleLogElement = getLogDamageToPlayer(
           "block",
@@ -350,6 +358,10 @@ const battleActions = () => {
         );
 
         battleLowerInner.insertAdjacentHTML("beforeend", battleLogElement);
+        battleLowerInner.scrollTo({
+          top: battleLowerInner.scrollHeight,
+          behavior: "smooth",
+        });
       }
     });
 
@@ -384,6 +396,10 @@ const battleActions = () => {
           );
 
           battleLowerInner.insertAdjacentHTML("beforeend", battleLogElement);
+          battleLowerInner.scrollTo({
+            top: battleLowerInner.scrollHeight,
+            behavior: "smooth",
+          });
         } else if (
           !enemyDefensePoints.includes(defensePointsList[pointIndex])
         ) {
@@ -401,6 +417,10 @@ const battleActions = () => {
           );
 
           battleLowerInner.insertAdjacentHTML("beforeend", battleLogElement);
+          battleLowerInner.scrollTo({
+            top: battleLowerInner.scrollHeight,
+            behavior: "smooth",
+          });
         } else {
           const battleLogElement = getLogDamageToEnemy(
             "block",
@@ -409,6 +429,10 @@ const battleActions = () => {
           );
 
           battleLowerInner.insertAdjacentHTML("beforeend", battleLogElement);
+          battleLowerInner.scrollTo({
+            top: battleLowerInner.scrollHeight,
+            behavior: "smooth",
+          });
         }
       }
     });
