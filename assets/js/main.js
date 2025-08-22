@@ -324,7 +324,7 @@ const battleActions = () => {
           currentEnemyHitDamage.toString()
         );
 
-        battleLowerInner.insertAdjacentHTML("afterbegin", battleLogElement);
+        battleLowerInner.insertAdjacentHTML("beforeend", battleLogElement);
       } else if (
         !enemyAttackPoints.includes(attackPointsList[defensePlayerPointIndex])
       ) {
@@ -341,7 +341,7 @@ const battleActions = () => {
           currentEnemyHitDamage.toString()
         );
 
-        battleLowerInner.insertAdjacentHTML("afterbegin", battleLogElement);
+        battleLowerInner.insertAdjacentHTML("beforeend", battleLogElement);
       } else {
         const battleLogElement = getLogDamageToPlayer(
           "block",
@@ -349,7 +349,7 @@ const battleActions = () => {
           ""
         );
 
-        battleLowerInner.insertAdjacentHTML("afterbegin", battleLogElement);
+        battleLowerInner.insertAdjacentHTML("beforeend", battleLogElement);
       }
     });
 
@@ -383,7 +383,7 @@ const battleActions = () => {
             currentPlayerHitDamage.toString()
           );
 
-          battleLowerInner.insertAdjacentHTML("afterbegin", battleLogElement);
+          battleLowerInner.insertAdjacentHTML("beforeend", battleLogElement);
         } else if (
           !enemyDefensePoints.includes(defensePointsList[pointIndex])
         ) {
@@ -400,7 +400,7 @@ const battleActions = () => {
             currentPlayerHitDamage.toString()
           );
 
-          battleLowerInner.insertAdjacentHTML("afterbegin", battleLogElement);
+          battleLowerInner.insertAdjacentHTML("beforeend", battleLogElement);
         } else {
           const battleLogElement = getLogDamageToEnemy(
             "block",
@@ -408,7 +408,7 @@ const battleActions = () => {
             ""
           );
 
-          battleLowerInner.insertAdjacentHTML("afterbegin", battleLogElement);
+          battleLowerInner.insertAdjacentHTML("beforeend", battleLogElement);
         }
       }
     });
