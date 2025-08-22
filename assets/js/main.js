@@ -5,7 +5,7 @@ const links = document.querySelectorAll(".nav__link");
 links.forEach((link) =>
   link.addEventListener("click", (e) => {
     e.preventDefault();
-    urlRoute();
+    urlRoute(e);
   })
 );
 
@@ -19,7 +19,6 @@ const urlRoutes = {
 };
 
 const urlRoute = (event) => {
-  event = event || window.event;
   event.preventDefault();
 
   const path = event.target.getAttribute("href");
@@ -28,7 +27,7 @@ const urlRoute = (event) => {
 };
 
 const urlLocationHandler = async () => {
-  let location = window.location.pathName;
+  let location = window.location.pathname;
 
   if (location.startsWith(REPOSITORY)) {
     location = location.slice(REPOSITORY.length);
