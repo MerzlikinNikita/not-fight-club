@@ -204,6 +204,9 @@ const battleActions = () => {
   const defensePointsList = defensePointsListInner.querySelectorAll("input");
   const attackPointsInner = document.querySelector(".battle__actions-left");
   const attackPointsList = attackPointsInner.querySelectorAll("input");
+  const battleLowerInner = document.querySelector(".battle__inner-lower");
+
+  battleLowerInner.innerHTML = localStorage.getItem("battleLogs") || "";
 
   let currentPlayerHealth =
     localStorage.getItem("currentPlayerHealth") || playerInfo.health;
@@ -249,45 +252,159 @@ const battleActions = () => {
     const enemyDefensePoints = getEnemyDefensePoints();
     const enemyAttackPoints = getEnemyAttackPoints();
     const defensePointsArray = Array.from(defensePointsList);
-    const playerDefensePoints = defensePointsArray.filter(
-      (point) => point.checked
-    );
+    const defensePlayerPointsIndexes = [];
 
-    console.log(playerDefensePoints);
+    // console.log("enemyDefensePoints", enemyDefensePoints);
+    // console.log("enemyAttackPoints", enemyAttackPoints);
 
-    console.log(enemyDefensePoints);
-    console.log(enemyAttackPoints);
+    const getLogDamageToEnemy = (messageType, enemyBodyPart, playerDamage) => {
+      let battleLog;
 
-    enemyAttackPoints.forEach((point) => {
-      if (!playerDefensePoints.includes(point)) {
-        const isCriticalDamage = calculateCriticalDamage("enemyCrit");
-        let criticalCoefficient = 1;
+      if (messageType === "critical") {
+        battleLog = `<div class="battle__log-inner">Player <span class="battle__log-text player">${playerInfo.name}</span> attacked enemy <span class="battle__log-text enemy">${enemyInfo.name}</span> to <span class="battle__log-text">${enemyBodyPart}</span> and was very lucky to give critical damage <span class="battle__log-text">${playerDamage}</span></div>`;
+      } else if (messageType === "block") {
+        battleLog = `<div class="battle__log-inner">Player <span class="battle__log-text player">${playerInfo.name}</span> attacked enemy <span class="battle__log-text enemy">${enemyInfo.name}</span> to <span class="battle__log-text">${enemyBodyPart}</span>, but <span class="battle__log-text">${enemyInfo.name}</span> was able to protect his <span class="battle__log-text">${enemyBodyPart}</span></div>`;
+      } else if (messageType === "standard") {
+        battleLog = `<div class="battle__log-inner">Player <span class="battle__log-text player">${playerInfo.name}</span> attacked enemy <span class="battle__log-text enemy">${enemyInfo.name}</span> to <span class="battle__log-text">${enemyBodyPart}</span> and give <span class="battle__log-text">${playerDamage}</span> damage</span></div>`;
+      }
 
-        if (isCriticalDamage) {
-          criticalCoefficient = 1.25;
-        }
+      return battleLog;
+    };
+
+    const getLogDamageToPlayer = (messageType, playerBodyPart, enemyDamage) => {
+      let battleLog;
+
+      if (messageType === "critical") {
+        battleLog = `<div class="battle__log-inner">Enemy <span class="battle__log-text enemy">${enemyInfo.name}</span> attacked player <span class="battle__log-text player">${playerInfo.name}</span> to <span class="battle__log-text">${playerBodyPart}</span> and was very lucky to give critical damage <span class="battle__log-text">${enemyDamage}</span></div>`;
+      } else if (messageType === "block") {
+        battleLog = `<div class="battle__log-inner">Enemy <span class="battle__log-text enemy">${enemyInfo.name}</span> attacked player <span class="battle__log-text player">${playerInfo.name}</span> to <span class="battle__log-text">${playerBodyPart}</span>, but <span class="battle__log-text">${playerInfo.name}</span> was able to protect his <span class="battle__log-text">${playerBodyPart}</span></div>`;
+      } else if (messageType === "standard") {
+        battleLog = `<div class="battle__log-inner">Enemy <span class="battle__log-text enemy">${enemyInfo.name}</span> attacked player <span class="battle__log-text player">${playerInfo.name}</span> to <span class="battle__log-text">${playerBodyPart}</span> and give <span class="battle__log-text">${enemyDamage}</span> damage</span></div>`;
+      }
+
+      return battleLog;
+    };
+
+    defensePointsArray.forEach((point, index) => {
+      if (point.checked) {
+        defensePlayerPointsIndexes.push(index);
+      }
+    });
+
+    enemyAttackPoints.forEach((_, index) => {
+      const isCriticalDamage = calculateCriticalDamage("enemyCrit");
+      const defensePlayerPointIndex = defensePlayerPointsIndexes[index];
+      const currentEnemyAttackPoint =
+        attackPointsList[defensePlayerPointIndex].previousElementSibling
+          .textContent;
+
+      let criticalCoefficient;
+      let currentEnemyHitDamage;
+
+      console.log(
+        "Is enemy hit critical (crit number is greater than 0.7) - ",
+        isCriticalDamage
+      );
+
+      if (isCriticalDamage) {
+        criticalCoefficient = 1.25;
+        currentEnemyHitDamage = Math.floor(
+          enemyInfo.damage * criticalCoefficient
+        );
 
         giveDamageToPlayer(criticalCoefficient);
+
+        const battleLogElement = getLogDamageToPlayer(
+          "critical",
+          currentEnemyAttackPoint,
+          currentEnemyHitDamage.toString()
+        );
+
+        battleLowerInner.insertAdjacentHTML("afterbegin", battleLogElement);
+      } else if (
+        !enemyAttackPoints.includes(attackPointsList[defensePlayerPointIndex])
+      ) {
+        criticalCoefficient = 1;
+        currentEnemyHitDamage = Math.floor(
+          enemyInfo.damage * criticalCoefficient
+        );
+
+        giveDamageToPlayer(criticalCoefficient);
+
+        const battleLogElement = getLogDamageToPlayer(
+          "standard",
+          currentEnemyAttackPoint,
+          currentEnemyHitDamage.toString()
+        );
+
+        battleLowerInner.insertAdjacentHTML("afterbegin", battleLogElement);
+      } else {
+        const battleLogElement = getLogDamageToPlayer(
+          "block",
+          currentEnemyAttackPoint,
+          ""
+        );
+
+        battleLowerInner.insertAdjacentHTML("afterbegin", battleLogElement);
       }
     });
 
     attackPointsList.forEach((point) => {
       if (point.checked) {
+        const currentPlayerAttackPoint =
+          point.previousElementSibling.textContent;
         const attackPointsArray = Array.from(attackPointsList);
         const pointIndex = attackPointsArray.indexOf(point);
         const isCriticalDamage = calculateCriticalDamage("playerCrit");
+
         let criticalCoefficient;
+        let currentPlayerHitDamage;
 
-        console.log(isCriticalDamage);
+        console.log(
+          "Is player hit critical (crit number is greater than 0.7) - ",
+          isCriticalDamage
+        );
 
-        if (!enemyDefensePoints.includes(defensePointsList[pointIndex])) {
-          criticalCoefficient = 1;
-
-          if (isCriticalDamage) {
-            criticalCoefficient = 1.5;
-          }
+        if (isCriticalDamage) {
+          criticalCoefficient = 1.25;
+          currentPlayerHitDamage = Math.floor(
+            playerInfo.damage * criticalCoefficient
+          );
 
           giveDamageToEnemy(criticalCoefficient);
+
+          const battleLogElement = getLogDamageToEnemy(
+            "critical",
+            currentPlayerAttackPoint,
+            currentPlayerHitDamage.toString()
+          );
+
+          battleLowerInner.insertAdjacentHTML("afterbegin", battleLogElement);
+        } else if (
+          !enemyDefensePoints.includes(defensePointsList[pointIndex])
+        ) {
+          criticalCoefficient = 1;
+          currentPlayerHitDamage = Math.floor(
+            playerInfo.damage * criticalCoefficient
+          );
+
+          giveDamageToEnemy(criticalCoefficient);
+
+          const battleLogElement = getLogDamageToEnemy(
+            "standard",
+            currentPlayerAttackPoint,
+            currentPlayerHitDamage.toString()
+          );
+
+          battleLowerInner.insertAdjacentHTML("afterbegin", battleLogElement);
+        } else {
+          const battleLogElement = getLogDamageToEnemy(
+            "block",
+            currentPlayerAttackPoint,
+            ""
+          );
+
+          battleLowerInner.insertAdjacentHTML("afterbegin", battleLogElement);
         }
       }
     });
@@ -311,6 +428,8 @@ const battleActions = () => {
 
       openBattleModal(battleModalLooserText);
     }
+
+    localStorage.setItem("battleLogs", battleLowerInner.innerHTML);
   });
 
   const openBattleModal = (text) => {
@@ -334,6 +453,7 @@ const battleActions = () => {
       localStorage.removeItem("currentEnemy");
       localStorage.removeItem("currentEnemyHealth");
       localStorage.removeItem("currentPlayerHealth");
+      localStorage.removeItem("battleLogs");
     };
 
     modal.addEventListener("click", (e) => {
@@ -362,9 +482,11 @@ const battleActions = () => {
   };
 
   const giveDamageToPlayer = (criticalCoefficient) => {
-    currentPlayerHealth -= Math.floor(enemyInfo.damage * criticalCoefficient);
+    const currentEnemyHitDamage = Math.floor(
+      enemyInfo.damage * criticalCoefficient
+    );
 
-    console.log("EnemyCritCoefficient", criticalCoefficient);
+    currentPlayerHealth -= currentEnemyHitDamage;
 
     currentPlayerHealthInPercents =
       (currentPlayerHealth / playerInfo.health) * 100;
@@ -373,13 +495,17 @@ const battleActions = () => {
 
     playerHealthPoints.textContent = `${currentPlayerHealth}/${playerInfo.health}`;
 
+    // console.log("currentEnemyHitDamage", currentEnemyHitDamage);
+
     localStorage.setItem("currentPlayerHealth", currentPlayerHealth);
   };
 
   const giveDamageToEnemy = (criticalCoefficient) => {
-    currentEnemyHealth -= Math.floor(playerInfo.damage * criticalCoefficient);
+    const currentPlayerHitDamage = Math.floor(
+      playerInfo.damage * criticalCoefficient
+    );
 
-    console.log("PlayerCritCoefficient", criticalCoefficient);
+    currentEnemyHealth -= currentPlayerHitDamage;
 
     currentEnemyHealthInPercents =
       (currentEnemyHealth / enemyInfo.health) * 100;
@@ -387,6 +513,8 @@ const battleActions = () => {
     enemyHealthBar.style.background = `linear-gradient(to right, darkred 0%, darkred ${currentEnemyHealthInPercents}%, #c4c4c4 ${currentEnemyHealthInPercents}%, #c4c4c4 100%)`;
 
     enemyHealthPoints.textContent = `${currentEnemyHealth}/${enemyInfo.health}`;
+
+    // console.log("currentPlayerHitDamage", currentPlayerHitDamage);
 
     localStorage.setItem("currentEnemyHealth", currentEnemyHealth);
   };
@@ -438,13 +566,16 @@ const battleActions = () => {
   toggleInputRadio();
 
   console.log(
-    "Враг Mahito имеет 2 точки защиты, 1 точку атаки, 140hp здоровья и 15hp урона"
+    "Враг Mahito имеет 2 точки защиты, 1 точку атаки, 150hp здоровья и 18hp урона"
   );
   console.log(
-    "Враг Toji имеет 3 точки защиты, 1 точку атаки, 150hp здоровья и 10hp урона"
+    "Враг Toji имеет 3 точки защиты, 1 точку атаки, 170hp здоровья и 15hp урона"
   );
   console.log(
-    "Враг Sukuna имеет 1 точку защиты, 2 точки атаки, 160hp здоровья и 10hp урона"
+    "Враг Sukuna имеет 1 точку защиты, 2 точки атаки, 180hp здоровья и 12hp урона"
+  );
+  console.log(
+    "Шанс критического урона у игрока и у противника равен 30% и умножает стандартный урон на 1.25 (для наглядности расчеты будут выводиться в консоль браузера после каждой атаки)"
   );
 };
 
@@ -453,24 +584,24 @@ const getEnemyInfo = () => {
 
   const sukunaEnemy = {
     name: "Sukuna",
-    health: "160",
-    damage: "10",
+    health: "180",
+    damage: "12",
     avatarSrc: originPath + "/assets/img/enemies/sukuna.webp",
     avatarAlt: "sukuna",
   };
 
   const tojiEnemy = {
     name: "Toji",
-    health: "150",
-    damage: "10",
+    health: "170",
+    damage: "15",
     avatarSrc: originPath + "/assets/img/enemies/toji.webp",
     avatarAlt: "toji",
   };
 
   const mahitoEnemy = {
     name: "Mahito",
-    health: "140",
-    damage: "15",
+    health: "150",
+    damage: "18",
     avatarSrc: originPath + "/assets/img/enemies/mahito.webp",
     avatarAlt: "mahito",
   };
@@ -529,59 +660,72 @@ const getCharacterInfo = (pathName) => {
 };
 
 const toggleInputRadio = () => {
-  const radioAttackInputs = document.querySelectorAll(".attack__option");
-  const radioDefenseInputs = document.querySelectorAll(".defense__option");
   const attackBtn = document.getElementById("attack-btn");
-  let checkedAttackCount = 0;
-  let checkedDefenseCount = 0;
+  const battleActionsInner = document.querySelector(".battle__actions");
 
-  radioAttackInputs.forEach((radio) => {
-    let wasChecked = false;
+  let wasChecked = false;
 
-    radio.addEventListener("mousedown", () => {
-      wasChecked = radio.checked;
-    });
-
-    radio.addEventListener("click", () => {
-      if (wasChecked) {
-        radio.checked = false;
-        checkedAttackCount -= 1;
-      } else {
-        checkedAttackCount += 1;
-      }
-      console.log("attack", checkedAttackCount);
-      updateAttackBtnState();
-    });
-  });
-
-  radioDefenseInputs.forEach((radio) => {
-    let wasChecked = false;
-
-    radio.addEventListener("mousedown", () => {
-      wasChecked = radio.checked;
-    });
-
-    radio.addEventListener("click", () => {
-      if (wasChecked) {
-        radio.checked = false;
-        checkedDefenseCount -= 1;
-      } else {
-        checkedDefenseCount += 1;
-      }
-      console.log("defense", checkedDefenseCount);
-      updateAttackBtnState();
-    });
+  battleActionsInner.addEventListener("mousedown", (e) => {
+    if (
+      e.target.classList.contains("attack__option") ||
+      e.target.classList.contains("defense__option")
+    ) {
+      wasChecked = e.target.checked;
+    }
   });
 
   const updateAttackBtnState = () => {
-    if (checkedAttackCount === 1 && checkedDefenseCount === 2) {
-      attackBtn.disabled = false;
-      attackBtn.style.cursor = "pointer";
-    } else {
-      attackBtn.disabled = true;
-      attackBtn.style.cursor = "not-allowed";
+    const checkedAttackCount = document.querySelectorAll(
+      ".attack__option:checked"
+    ).length;
+    const checkedDefenseCount = document.querySelectorAll(
+      ".defense__option:checked"
+    ).length;
+
+    // console.log("checkedAttackCount", checkedAttackCount);
+    // console.log("checkedDefenseCount", checkedDefenseCount);
+
+    attackBtn.disabled = !(
+      checkedAttackCount === 1 && checkedDefenseCount === 2
+    );
+    attackBtn.style.cursor = attackBtn.disabled ? "not-allowed" : "pointer";
+  };
+
+  handleRadioClick = (e) => {
+    if (e.target.tagName === "LABEL" && e.target.hasAttribute("for")) {
+      e.preventDefault();
+
+      const radio = document.getElementById(e.target.getAttribute("for"));
+
+      if (radio) {
+        radio.checked = !radio.checked;
+        updateAttackBtnState();
+      }
+
+      return;
+    }
+
+    if (
+      e.target.classList.contains("attack__option") ||
+      e.target.classList.contains("defense__option")
+    ) {
+      setTimeout(() => {
+        const radio = e.target;
+
+        if (wasChecked) {
+          setTimeout(() => {
+            radio.checked = false;
+            updateAttackBtnState();
+          }, 0);
+        } else {
+          updateAttackBtnState();
+        }
+      });
     }
   };
+
+  battleActionsInner.removeEventListener("click", handleRadioClick);
+  battleActionsInner.addEventListener("click", handleRadioClick);
 
   updateAttackBtnState();
 };
