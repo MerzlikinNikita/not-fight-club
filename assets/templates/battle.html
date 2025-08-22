@@ -1,1 +1,174 @@
 <span class="template__title">Battle</span>
+<div class="battle__inner-upper">
+  <div class="player__inner">
+    <span class="player__name">???</span>
+    <div class="player__avatar-inner">
+      <img
+        class="avatar__img active"
+        src="/assets/img/characters/udzy.webp"
+        alt="udzy"
+      />
+    </div>
+    <input
+      type="range"
+      value="100"
+      min="0"
+      max="100"
+      step="1"
+      name="player-health-bar"
+      id="player-health-bar"
+    />
+    <span class="player__health-points">150/150</span>
+  </div>
+
+  <div class="battle__description">
+    <span class="battle__description-title"
+      >Please pick 1 Attack zone and 2 Defense zones</span
+    >
+    <div class="battle__actions">
+      <div class="battle__actions-left">
+        <span class="attack__actions-title">Attack zones</span>
+        <div class="battle__actions-item">
+          <label for="attack-head">Head</label>
+          <input
+            class="attack__option"
+            type="radio"
+            name="attack1"
+            id="attack-head"
+            value="0"
+          />
+        </div>
+        <div class="battle__actions-item">
+          <label for="attack-neck">Neck</label>
+          <input
+            class="attack__option"
+            type="radio"
+            name="attack2"
+            id="attack-neck"
+            value="0"
+          />
+        </div>
+        <div class="battle__actions-item">
+          <label for="attack-body">Body</label>
+          <input
+            class="attack__option"
+            type="radio"
+            name="attack3"
+            id="attack-body"
+            value="0"
+          />
+        </div>
+        <div class="battle__actions-item">
+          <label for="attack-belly">Belly</label>
+          <input
+            class="attack__option"
+            type="radio"
+            name="attack4"
+            id="attack-belly"
+            value="0"
+          />
+        </div>
+        <div class="battle__actions-item">
+          <label for="attack-legs">Legs</label>
+          <input
+            class="attack__option"
+            type="radio"
+            name="attack5"
+            id="attack-legs"
+            value="0"
+          />
+        </div>
+      </div>
+
+      <div class="battle__actions-right">
+        <span class="defense__actions-title">Defense zones</span>
+        <div class="battle__actions-item">
+          <input
+            class="defense__option"
+            type="radio"
+            name="defense1"
+            id="defense-head"
+            value="0"
+          />
+          <label for="defense-head">Head</label>
+        </div>
+        <div class="battle__actions-item">
+          <input
+            class="defense__option"
+            type="radio"
+            name="defense2"
+            id="defense-neck"
+            value="0"
+          />
+          <label for="defense-neck">Neck</label>
+        </div>
+        <div class="battle__actions-item">
+          <input
+            class="defense__option"
+            type="radio"
+            name="defense3"
+            id="defense-body"
+            value="0"
+          />
+          <label for="defense-body">Body</label>
+        </div>
+        <div class="battle__actions-item">
+          <input
+            class="defense__option"
+            type="radio"
+            name="defense4"
+            id="defense-belly"
+            value="0"
+          />
+          <label for="defense-belly">Belly</label>
+        </div>
+        <div class="battle__actions-item">
+          <input
+            class="defense__option"
+            type="radio"
+            name="defense5"
+            id="defense-legs"
+            value="0"
+          />
+          <label for="defense-legs">Legs</label>
+        </div>
+      </div>
+    </div>
+
+    <button id="attack-btn">Attack!</button>
+  </div>
+
+  <div class="enemy__inner">
+    <span class="enemy__name">???</span>
+    <div class="enemy__avatar-inner">
+      <img
+        class="avatar__img active"
+        src="/assets/img/enemies/mahito.webp"
+        alt="mahito"
+      />
+    </div>
+    <input
+      type="range"
+      value="100"
+      min="0"
+      max="100"
+      step="1"
+      name="enemy-health-bar"
+      id="enemy-health-bar"
+    />
+    <span class="enemy__health-points">150/150</span>
+  </div>
+</div>
+
+<div class="modal">
+  <div class="modal__battle">
+    <button id="close-battle-modal">
+      <span class="close__modal-line"></span>
+      <span class="close__modal-line"></span>
+    </button>
+    <span class="winner__battle-text">Good job, you won!</span>
+    <span class="looser__battle-text">Maybe next time :(</span>
+  </div>
+</div>
+
+<div class="battle__inner-lower"></div>

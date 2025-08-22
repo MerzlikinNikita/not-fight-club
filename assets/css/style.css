@@ -40,11 +40,12 @@ button {
   position: absolute;
   top: 50%;
   left: 48.5%;
+  padding: 10px 20px;
 }
 
 .divider {
   width: 100%;
-  height: 1px;
+  height: 2px;
   background-color: #000;
   margin-bottom: 20px;
 }
@@ -53,4 +54,312 @@ button {
   position: absolute;
   top: 25px;
   left: 20px;
+}
+
+.settings__description {
+  margin-right: 10px;
+}
+
+#edit-name-btn,
+#save-name-btn {
+  margin-left: 10px;
+}
+
+#edit-name-input {
+  display: none;
+}
+
+#save-name-btn {
+  display: none;
+}
+
+.character__inner {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.avatar__inner {
+  width: 300px;
+  height: 350px;
+  border: 1px solid #000;
+  border-radius: 15px;
+  overflow: hidden;
+  position: relative;
+}
+
+.character__description > .player__name {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.wins__total {
+  margin-right: 10px;
+  color: #080;
+}
+
+.losses__total {
+  color: #f00;
+}
+
+.avatar__img.active {
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
+}
+
+#change-avatar-btn {
+  position: absolute;
+  top: 43%;
+  left: 43%;
+  width: 50px;
+  height: 50px;
+  border: 1px solid #000;
+  border-radius: 50%;
+  display: none;
+}
+
+.avatar__inner:hover {
+  opacity: 0.75;
+}
+
+.avatar__inner:hover #change-avatar-btn {
+  display: block;
+}
+
+#close-character-modal,
+#close-battle-modal {
+  display: block;
+  margin-right: 0;
+  margin-left: auto;
+  width: 27px;
+  height: 27px;
+  background-color: transparent;
+  border: none;
+  position: relative;
+}
+
+.close__modal-line {
+  position: absolute;
+  top: 0;
+  left: 46.5%;
+  display: block;
+  width: 2px;
+  height: 29px;
+  background-color: #000;
+}
+
+.close__modal-line:first-child {
+  transform: rotate(45deg);
+}
+
+.close__modal-line:last-child {
+  transform: rotate(-45deg);
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: 99999;
+  background-color: rgba(0, 0, 0, 0.3);
+  pointer-events: auto;
+  overflow-y: auto;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.8s ease-out, visibility 0.8s ease-out;
+}
+
+.modal.open {
+  visibility: visible;
+  opacity: 1;
+}
+
+.modal__character,
+.modal__battle {
+  max-width: 1480px;
+  padding: 30px 30px 30px;
+  margin: 250px auto 0;
+  background-color: #fff;
+  pointer-events: auto;
+  transform: translateX(-100vw);
+  transition: transform 0.8s ease-out;
+}
+
+.modal__character.open,
+.modal__battle.open {
+  transform: translateX(0);
+}
+
+.modal__battle {
+  max-width: 1200px;
+  padding: 30px 30px 50px;
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.winner__battle-text,
+.looser__battle-text {
+  display: none;
+}
+
+.winner__battle-text.active,
+.looser__battle-text.active {
+  display: inline;
+}
+
+.modal__character > .avatar__img {
+  width: 300px;
+  height: 350px;
+  border: 1px solid #000;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-right: 10px;
+  object-fit: contain;
+}
+
+.modal__character > .avatar__img:hover {
+  opacity: 0.75;
+}
+
+.battle__inner-upper {
+  margin-top: 50px;
+  margin-bottom: 50px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.battle__inner-lower {
+  max-width: 100%;
+  height: 300px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  padding: 10px;
+}
+
+.player__inner,
+.enemy__inner {
+  display: flex;
+  width: 300px;
+  flex-direction: column;
+  align-items: center;
+}
+
+.player__inner > .player__name,
+.enemy__inner > .enemy__name {
+  margin-bottom: 10px;
+}
+
+#player-health-bar,
+#enemy-health-bar {
+  width: 100%;
+  height: 15px;
+  -webkit-appearance: none;
+  background: linear-gradient(
+    to right,
+    darkred 0%,
+    darkred 100%,
+    #c4c4c4 100%,
+    #c4c4c4 100%
+  );
+  border: none;
+  outline: none;
+  border-radius: 5px;
+  margin-bottom: 5px;
+}
+
+#player-health-bar::-webkit-slider-thumb,
+#enemy-health-bar::-webkit-slider-thumb {
+  -webkit-appearance: none;
+}
+
+.battle__description {
+  width: 500px;
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.battle__description-title {
+  margin-bottom: 20px;
+}
+
+.battle__actions {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.battle__actions-left,
+.battle__actions-right {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+}
+
+.battle__actions-left {
+  text-align: right;
+  padding-right: 20px;
+  border-right: 1px solid #000;
+}
+
+.attack__actions-title,
+.defense__actions-title {
+  margin-bottom: 5px;
+}
+
+.battle__actions-left > label {
+  display: inline-block;
+}
+
+.battle__actions-right {
+  text-align: left;
+  padding-left: 20px;
+}
+
+.battle__actions-item {
+  -webkit-user-select: none;
+  margin-bottom: 5px;
+}
+
+.player__avatar-inner,
+.enemy__avatar-inner {
+  width: 300px;
+  height: 350px;
+  border: 1px solid #000;
+  border-radius: 15px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+#attack-btn {
+  -webkit-user-select: none;
+  padding: 8px 12px;
+}
+
+.attack__option,
+.defense__option {
+  cursor: pointer;
+}
+
+.battle__log-inner {
+  margin-bottom: 10px;
+}
+
+.battle__log-text {
+  font-weight: bold;
+}
+
+.battle__log-text.player {
+  color: #080;
+}
+
+.battle__log-text.enemy {
+  color: #f00;
 }
