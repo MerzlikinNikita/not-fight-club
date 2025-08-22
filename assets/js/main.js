@@ -174,7 +174,7 @@ const characterActions = () => {
     localStorage.setItem("selectedAvatarAlt", newAvatar.alt);
   };
 
-  const pathName = window.location.pathname;
+  const pathName = window.location.pathname.slice(REPOSITORY.length);
 
   getCharacterInfo(pathName);
   changeAvatarBtn.addEventListener("click", openCharacterModal);
@@ -193,7 +193,7 @@ const mainActions = () => {
 };
 
 const battleActions = () => {
-  const pathName = window.location.pathname;
+  const pathName = window.location.pathname.slice(REPOSITORY.length);
   const enemyInfo =
     JSON.parse(localStorage.getItem("currentEnemy")) || getEnemyInfo();
   const playerInfo = getCharacterInfo(pathName);
@@ -590,7 +590,7 @@ const getEnemyInfo = () => {
     name: "Sukuna",
     health: "180",
     damage: "12",
-    avatarSrc: originPath + "/assets/img/enemies/sukuna.webp",
+    avatarSrc: originPath + `${REPOSITORY}/assets/img/enemies/sukuna.webp`,
     avatarAlt: "sukuna",
   };
 
@@ -598,7 +598,7 @@ const getEnemyInfo = () => {
     name: "Toji",
     health: "170",
     damage: "15",
-    avatarSrc: originPath + "/assets/img/enemies/toji.webp",
+    avatarSrc: originPath + `${REPOSITORY}/assets/img/enemies/toji.webp`,
     avatarAlt: "toji",
   };
 
@@ -606,7 +606,7 @@ const getEnemyInfo = () => {
     name: "Mahito",
     health: "150",
     damage: "18",
-    avatarSrc: originPath + "/assets/img/enemies/mahito.webp",
+    avatarSrc: originPath + `${REPOSITORY}/assets/img/enemies/mahito.webp`,
     avatarAlt: "mahito",
   };
 
